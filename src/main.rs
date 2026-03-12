@@ -13,7 +13,7 @@ struct Cli {
     #[argh(positional)]
     via: PathBuf,
     /// output format
-    #[argh(option)]
+    #[argh(option, default = "TargetFormat::String")]
     format: TargetFormat,
 }
 
@@ -22,11 +22,17 @@ struct Cli {
 enum TargetFormat {
     String,
     #[cfg(feature = "shell-quote-bash")]
-    Bash,
+    BashEval,
+    #[cfg(feature = "shell-quote-bash")]
+    BashEscaped,
     #[cfg(feature = "shell-quote-fish")]
-    Fish,
+    FishEval,
+    #[cfg(feature = "shell-quote-fish")]
+    FishEscaped,
     #[cfg(feature = "shell-quote-sh")]
-    Sh,
+    ShEval,
+    #[cfg(feature = "shell-quote-sh")]
+    ShEscaped,
 }
 
 fn main() -> ExitCode {
@@ -59,22 +65,37 @@ fn main_inner(args: Cli) -> eyre::Result<()> {
             println!("{new_pwd}");
         }
         #[cfg(feature = "shell-quote-bash")]
-        TargetFormat::Bash => {
+        TargetFormat::BashEval => {
             let quoted: String = new_pwd.quoted(shell_quote::Bash);
             println!("cd {quoted}");
         }
+        #[cfg(feature = "shell-quote-bash")]
+        TargetFormat::BashEscaped => {
+            let quoted: String = new_pwd.quoted(shell_quote::Bash);
+            print!("{quoted}");
+        }
         #[cfg(feature = "shell-quote-fish")]
-        TargetFormat::Fish => {
+        TargetFormat::FishEval => {
             let quoted: String = new_pwd.quoted(shell_quote::Fish);
             println!("cd {quoted}");
         }
+        #[cfg(feature = "shell-quote-fish")]
+        TargetFormat::FishEscaped => {
+            let quoted: String = new_pwd.quoted(shell_quote::Fish);
+            print!("{quoted}");
+        }
         #[cfg(feature = "shell-quote-sh")]
-        TargetFormat::Sh => {
+        TargetFormat::ShEval => {
             let quoted: Vec<u8> = new_pwd.quoted(shell_quote::Sh);
             let mut stdout = std::io::stdout();
             stdout.write_all(b"cd ")?;
             stdout.write_all(&quoted)?;
             stdout.write_all(b"\n")?;
+        }
+        #[cfg(feature = "shell-quote-sh")]
+        TargetFormat::ShEscaped => {
+            let quoted: Vec<u8> = new_pwd.quoted(shell_quote::Sh);
+            std::io::stdout().write_all(&quoted)?;
         }
     }
     Ok(())
