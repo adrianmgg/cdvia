@@ -3,4 +3,16 @@ name = "cdvia"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["shell-quote-all"]
+shell-quote = ["dep:shell-quote"]
+shell-quote-all = ["shell-quote-bash", "shell-quote-fish", "shell-quote-sh"]
+shell-quote-bash = ["shell-quote", "shell-quote/bash"]
+shell-quote-fish = ["shell-quote", "shell-quote/fish"]
+shell-quote-sh = ["shell-quote", "shell-quote/sh"]
+
 [dependencies]
+argh = { version = "0.1.17", default-features = false, features = ["help"] }
+eyre = { version = "0.6.12", default-features = false }
+shell-quote = { version = "0.7.2", optional = true, default-features = false }
+simple-eyre = "0.3.1"
