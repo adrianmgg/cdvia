@@ -6,22 +6,23 @@ but *via* a different symlink.
 ```
 /
 ├─ foo
-│  └─ a
-│     └─ b
+│  └─ a -> ../bar/qux/a
 └─ bar
    └─ qux
-      └─ a -> ../../foo/a
+      └─ a
+         └─ b
+            └─ c
 ```
 
 ```
 > pwd
-/foo/a
-> cd $(cdvia /bar/qux/a)
+/bar/qux/a/b/c
+> cd $(cdvia /foo/a)
 > pwd
-/bar/qux/a/b
-> cd $(cdvia /foo)
+/foo/a/b/c
+> cd $(cdvia /)
 > pwd
-/foo/a/b
+/bar/qux/a/b/c
 ```
 
 Normal invocation outputs the new path to stdout.
