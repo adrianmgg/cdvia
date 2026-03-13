@@ -36,3 +36,10 @@ Also supports formats `sh_eval` and `fish_eval` for those shells,
 and `bash_escaped`, `sh_escaped`, and `fish_escaped` to get the escaped version
 but without the accompanying `cd ` command.
 
+### sample bash function
+bash function to call cdvia easily and without needing to use the eval feature.
+```bash
+function cdvia { if _cdvia_dest="$(command cdvia --format string -- "$1")"; then cd "$_cdvia_dest"; fi }
+```
+(note the use of `command` which allows the underlying binary and the function to both be called `cdvia`)  
+(note also the use of `--` so that paths starting with hyphens won't have any problems)
