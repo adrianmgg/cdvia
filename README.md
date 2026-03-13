@@ -35,6 +35,7 @@ eval $(cdvia /foo/bar --format bash_eval)
 Also supports formats `sh_eval` and `fish_eval` for those shells,
 and `bash_escaped`, `sh_escaped`, and `fish_escaped` to get the escaped version
 but without the accompanying `cd ` command.
+(The default format is `string`.)
 
 ### sample bash function
 bash function to call cdvia easily and without needing to use the eval feature.
@@ -48,3 +49,4 @@ function cdvia { if _cdvia_dest="$(command cdvia --format string -- "$1")"; then
 - [ ] need to verify that the fish & sh versions actually work in pracice (they should, but it would be good to double check)
 - [ ] set up some basic CI & have some builds provided
 - [ ] try to figure out a more elegant way of doing the shell-function versions, and write some up for more shells
+- [ ] figure out a better way of doing the `string` format case's writing the path to stdout, smth that doesn't fail if it's a valid path but not valid utf8?
